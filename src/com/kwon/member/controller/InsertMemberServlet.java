@@ -57,7 +57,7 @@ public class InsertMemberServlet extends HttpServlet {
 		} else {
 			request.setAttribute("msg", "회원가입 중 에러 발생");
 			request.getRequestDispatcher("views/common/error.jsp").forward(request, response);
-		}
+		} 
 		
 		
 		
