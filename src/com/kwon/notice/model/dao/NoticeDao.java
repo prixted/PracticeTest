@@ -52,6 +52,7 @@ public class NoticeDao {
 			
 			if(rset.next()) {
 				listCount = rset.getInt(1);
+				System.out.println("[Dao] listCount : " + listCount);
 			}
 			
 		} catch(SQLException e) {
@@ -64,7 +65,6 @@ public class NoticeDao {
 		return listCount;
 	}
 
-	
 	/**
 	 * Notice 리스트 가져오기
 	 * @param conn
@@ -116,7 +116,6 @@ public class NoticeDao {
 		return list;
 	}
 
-
 	/**
 	 * 게시글 1개 불러오기
 	 * 2020.02.28 Kwon
@@ -159,7 +158,13 @@ public class NoticeDao {
 		return n;
 	}
 
-
+	/**
+	 * 게시글 추가하기
+	 * 2020.02.27 Kwon
+	 * @param conn
+	 * @param n
+	 * @return
+	 */
 	public int insertNotice(Connection conn, Notice n) {
 		int result = 0;
 		PreparedStatement pstmt = null;
@@ -184,7 +189,6 @@ public class NoticeDao {
 		
 		return result;
 	}
-
 
 	/**
 	 * 공지사항 수정 보여주기
@@ -228,7 +232,6 @@ public class NoticeDao {
 		return n;
 	}
 
-
 	/**
 	 * 공지사항 조회수 증가 메소드
 	 * 2020.03.01 Kwon
@@ -257,7 +260,6 @@ public class NoticeDao {
 		return result;
 		
 	}
-
 
 	/**
 	 * 공지사항 수정하기
@@ -293,7 +295,6 @@ public class NoticeDao {
 		return result;
 	}
 
-
 	/**
 	 * 공지사항 삭제하기 (STATUS = N으로 변경하기)
 	 * 2020.03.01 Kwon
@@ -321,6 +322,49 @@ public class NoticeDao {
 		return result;
 	}
 
+	/**
+	 * 공지사항 검색 숫자 가져오기
+	 * @param conn
+	 * @param category
+	 * @param keyword
+	 * @param currentPage
+	 * @param limit
+	 * @return
+	 */
+	public int getListSearchCount(Connection conn, String category, String keyword) {
+		int result = 0;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		String sql = null;
+
+		switch(category) {
+			case "userName" : sql = prop.getProperty("searchUserNameNoticeCount"); break;
+			case "title" : sql = prop.getProperty("searchTitleNoticeCount"); break;
+			case "content" : sql = prop.getProperty("searchContentNoticeCount"); break;
+		}
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, keyword);
+			
+			rset = pstmt.executeQuery();
+			
+			if(rset.next()) {
+				result = rset.getInt(1);
+				System.out.println("[Dao] 검색한 글 갯수 : " + result);
+			}
+			
+			
+		} catch(SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(rset);
+			close(pstmt);
+		}
+		
+		return result;
+	}
 
 	/**
 	 * 공지사항 검색하기
@@ -330,25 +374,35 @@ public class NoticeDao {
 	 * @param keyword
 	 * @return
 	 */
-	public ArrayList<Notice> searchNotice(Connection conn, String con, String keyword) {
+	public ArrayList<Notice> searchNoticeList(Connection conn, String category, 
+									String keyword, int currentPage, int limit) {
 		ArrayList<Notice> list = null;
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 		String sql = null;
 		
-		switch(con) {
-			case "userName" : sql = prop.getProperty("searchNameNotice"); break;
+		switch(category) {
+			case "userName" : sql = prop.getProperty("searchUserNameNotice"); break;
 			case "title" : sql = prop.getProperty("searchTitleNotice"); break;
 			case "content" : sql = prop.getProperty("searchContentNotice"); break;
 		}
 		
 		try {
 			pstmt = conn.prepareStatement(sql);
+			
+			int startRow = (currentPage-1)*limit +1;
+			int endRow = startRow + limit -1;
+			
+
 			pstmt.setString(1, keyword);
+			pstmt.setInt(2, endRow);
+			pstmt.setInt(3, startRow);
 			
 			rset = pstmt.executeQuery();
 			
 			list = new ArrayList<Notice>();
+			
+			System.out.println("검색한 카테고리 : " + category + " , 검색한 키워드 : " + keyword);
 			
 			while(rset.next()) {
 				Notice n = new Notice();
@@ -362,7 +416,7 @@ public class NoticeDao {
 				n.setnDate(rset.getDate("N_DATE"));
 				n.setnStatus(rset.getString("N_STATUS"));
 				
-				list.add(n);
+				list.add(n);				
 				
 			}
 			
@@ -375,7 +429,6 @@ public class NoticeDao {
 		
 		return list;
 	}
-
 
 
 }
