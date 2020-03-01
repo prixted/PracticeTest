@@ -60,7 +60,7 @@
 				<input type="hidden" value="<%= n.getNno() %>"/>
 				<td><%= n.getNno() %></td>
 				<td><%= n.getnTitle() %></td>
-				<td><%= n.getnWriter() %></td>
+				<td><%= n.getnUserName() %></td>
 				<td><%= n.getnDate() %></td>
 				<td><%= n.getnCount() %></td>
 			</tr>
@@ -98,14 +98,14 @@
 		<div class="searchArea" align="center">
 			<select id="searchCondition" name="searchCondition">
 				<option>---</option>
-				<option value="writer">작성자</option>
+				<option value="userName">작성자</option>
 				<option value="title">제목</option>
 				<option value="content">내용</option>
 			</select>
-			<input type="search">
-			<button type="submit">검색하기</button>
+			<input type="search" id="keyword" placeholder="키워드를 입력하세요!"> 
+			<button type="button" onclick="search();">검색하기</button>
 			<% if(m != null && m.getUserRoles() == 777){ %>
-				<button onclick="location.href='views/board/boardInsertForm.jsp'">작성하기</button>
+				<button onclick="location.href='views/notice/noticeInsertForm.jsp'">작성하기</button>
 			<% } %>
 			
 		</div>
@@ -122,7 +122,10 @@
 				location.href="<%=request.getContextPath()%>/selectOne.no?nno=" + nno;
 			});
 		});
+		function search(){
+			location.href="<%=request.getContextPath()%>/searchNotice.no?con="+$('#searchCondition').val()+"&keyword="+$('#keyword').val();
+		}
+
 	</script>
-	<%@ include file="../common/footer.jsp" %>
 </body>
 </html>

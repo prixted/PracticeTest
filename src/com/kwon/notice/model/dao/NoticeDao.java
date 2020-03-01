@@ -96,7 +96,8 @@ public class NoticeDao {
 				
 				n.setNno(rset.getInt("N_NO"));
 				n.setnTitle(rset.getString("N_TITLE"));
-				n.setnWriter(rset.getString("N_WRITER"));
+				n.setnUserName(rset.getString("N_USERNAME"));
+				n.setnUserId(rset.getString("N_USERID"));
 				n.setnContent(rset.getString("N_CONTENT"));
 				n.setnCount(rset.getInt("N_COUNT"));
 				n.setnDate(rset.getDate("N_DATE"));
@@ -140,7 +141,8 @@ public class NoticeDao {
 				
 				n.setNno(rset.getInt("N_NO"));
 				n.setnTitle(rset.getString("N_TITLE"));
-				n.setnWriter(rset.getString("N_WRITER"));
+				n.setnUserName(rset.getString("N_USERNAME"));
+				n.setnUserId(rset.getString("N_USERID"));
 				n.setnContent(rset.getString("N_CONTENT"));
 				n.setnCount(rset.getInt("N_COUNT"));
 				n.setnDate(rset.getDate("N_DATE"));
@@ -155,6 +157,223 @@ public class NoticeDao {
 		}
 		
 		return n;
+	}
+
+
+	public int insertNotice(Connection conn, Notice n) {
+		int result = 0;
+		PreparedStatement pstmt = null;
+		String sql = prop.getProperty("insertNotice");
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, n.getnTitle());
+			pstmt.setString(2, n.getnUserName());
+			pstmt.setString(3, n.getnUserId());
+			pstmt.setString(4, n.getnContent());
+			pstmt.setDate(5, n.getnDate());
+			
+			result = pstmt.executeUpdate();
+			
+		} catch(SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+		}
+		
+		return result;
+	}
+
+
+	/**
+	 * 공지사항 수정 보여주기
+	 * 2020.03.01 Kwon
+	 * @param conn
+	 * @return
+	 */
+	public Notice updateViewNotice(Connection conn, int nno) {
+		Notice n = null;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		String sql = prop.getProperty("selectOne");
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setInt(1, nno);
+			
+			rset = pstmt.executeQuery();
+			
+			if(rset.next()) {
+				n = new Notice();
+				
+				n.setNno(nno);
+				n.setnTitle(rset.getString("N_TITLE"));
+				n.setnUserName(rset.getString("N_USERNAME"));
+				n.setnUserId(rset.getString("N_USERID"));
+				n.setnContent(rset.getString("N_CONTENT"));
+				n.setnDate(rset.getDate("N_DATE"));
+				n.setnStatus(rset.getString("N_STATUS"));
+				
+			}
+			
+		} catch(SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(rset);
+			close(pstmt);
+		}
+		
+		return n;
+	}
+
+
+	/**
+	 * 공지사항 조회수 증가 메소드
+	 * 2020.03.01 Kwon
+	 * @param nno
+	 * @return 
+	 */
+	public int noticeCount(Connection conn, int nno) {
+		int result = 0;
+		PreparedStatement pstmt = null;
+		String sql = prop.getProperty("countUp");
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setInt(1, nno);
+			
+			result = pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+		}
+		
+		
+		return result;
+		
+	}
+
+
+	/**
+	 * 공지사항 수정하기
+	 * 2020.03.01 kwon
+	 * @param conn
+	 * @param n
+	 * @return
+	 */
+	public int updateNotice(Connection conn, Notice n) {
+		int result = 0;
+		PreparedStatement pstmt = null;
+		String sql = prop.getProperty("updateNotice");
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, n.getnTitle());
+			pstmt.setString(2, n.getnUserName());
+			pstmt.setString(3, n.getnUserId());
+			pstmt.setString(4, n.getnContent());
+			pstmt.setDate(5, n.getnDate());
+			
+			pstmt.setInt(6, n.getNno());
+			
+			result = pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+		}
+		
+		return result;
+	}
+
+
+	/**
+	 * 공지사항 삭제하기 (STATUS = N으로 변경하기)
+	 * 2020.03.01 Kwon
+	 * @param conn
+	 * @param nno
+	 * @return
+	 */
+	public int deleteNotice(Connection conn, int nno) {
+		int result = 0;
+		PreparedStatement pstmt = null;
+		String sql = prop.getProperty("deleteNotice");
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, nno);
+			
+			result = pstmt.executeUpdate();
+			
+		} catch(SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+		}
+		
+		return result;
+	}
+
+
+	/**
+	 * 공지사항 검색하기
+	 * 2020.03.01 Kwon
+	 * @param conn
+	 * @param con
+	 * @param keyword
+	 * @return
+	 */
+	public ArrayList<Notice> searchNotice(Connection conn, String con, String keyword) {
+		ArrayList<Notice> list = null;
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		String sql = null;
+		
+		switch(con) {
+			case "userName" : sql = prop.getProperty("searchNameNotice"); break;
+			case "title" : sql = prop.getProperty("searchTitleNotice"); break;
+			case "content" : sql = prop.getProperty("searchContentNotice"); break;
+		}
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, keyword);
+			
+			rset = pstmt.executeQuery();
+			
+			list = new ArrayList<Notice>();
+			
+			while(rset.next()) {
+				Notice n = new Notice();
+				
+				n.setNno(rset.getInt("N_NO"));
+				n.setnTitle(rset.getString("N_TITLE"));
+				n.setnUserName(rset.getString("N_USERNAME"));
+				n.setnUserId(rset.getString("N_USERID"));
+				n.setnContent(rset.getString("N_CONTENT"));
+				n.setnCount(rset.getInt("N_COUNT"));
+				n.setnDate(rset.getDate("N_DATE"));
+				n.setnStatus(rset.getString("N_STATUS"));
+				
+				list.add(n);
+				
+			}
+			
+		} catch(SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(rset);
+			close(pstmt);
+		}
+		
+		return list;
 	}
 
 

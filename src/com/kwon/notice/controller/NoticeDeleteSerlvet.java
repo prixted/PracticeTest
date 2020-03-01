@@ -1,7 +1,6 @@
 package com.kwon.notice.controller;
 
 import java.io.IOException;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -9,19 +8,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.kwon.notice.model.service.NoticeService;
-import com.kwon.notice.model.vo.Notice;
 
 /**
- * Servlet implementation class NoticeSelectOneServlet
+ * Servlet implementation class NoticeDeleteSerlvet
  */
-@WebServlet("/selectOne.no")
-public class NoticeSelectOneServlet extends HttpServlet {
+@WebServlet("/nDelete.no")
+public class NoticeDeleteSerlvet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public NoticeSelectOneServlet() {
+    public NoticeDeleteSerlvet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -32,20 +30,14 @@ public class NoticeSelectOneServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		int nno = Integer.parseInt(request.getParameter("nno"));
 		
-		Notice n = new Notice();
-		NoticeService ns = new NoticeService();
-		n = ns.noticeSelectOne(nno);
+		int result = new NoticeService().deleteNotice(nno);
 		
-		String page = ""; 
-		if(n != null) {
-			ns.noticeCount(nno);
-			page = "views/notice/noticeDetail.jsp";
-			request.setAttribute("notice", n);
+		if(result > 0) {
+			response.sendRedirect("selectList.no");
 		} else {
-			page = "error.jsp";
-			request.setAttribute("msg", "상세보기 실패!");
+			request.setAttribute("msg", "공지사항 삭제 실패!");
+			request.getRequestDispatcher("views/common/error.jsp").forward(request, response);
 		}
-		request.getRequestDispatcher(page).forward(request, response);
 
 	}
 

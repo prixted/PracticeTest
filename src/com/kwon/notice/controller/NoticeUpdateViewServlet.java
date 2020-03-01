@@ -12,16 +12,16 @@ import com.kwon.notice.model.service.NoticeService;
 import com.kwon.notice.model.vo.Notice;
 
 /**
- * Servlet implementation class NoticeSelectOneServlet
+ * Servlet implementation class NoticeUpdateServlet
  */
-@WebServlet("/selectOne.no")
-public class NoticeSelectOneServlet extends HttpServlet {
+@WebServlet("/nUpdateView.no")
+public class NoticeUpdateViewServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public NoticeSelectOneServlet() {
+    public NoticeUpdateViewServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -30,20 +30,21 @@ public class NoticeSelectOneServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// 업데이트니까 int값으로 result를 받아주자
+		Notice n = new Notice();
 		int nno = Integer.parseInt(request.getParameter("nno"));
 		
-		Notice n = new Notice();
-		NoticeService ns = new NoticeService();
-		n = ns.noticeSelectOne(nno);
+		n = new NoticeService().updateViewNotice(nno); 
+		System.out.println("[Servlet] nUpview Notice : " + n);
 		
-		String page = ""; 
-		if(n != null) {
-			ns.noticeCount(nno);
-			page = "views/notice/noticeDetail.jsp";
+		String page = "";
+		
+		if(n != null) {		
+			page = "views/notice/noticeUpdateForm.jsp";
 			request.setAttribute("notice", n);
 		} else {
-			page = "error.jsp";
-			request.setAttribute("msg", "상세보기 실패!");
+			page = "views/common/error.jsp";
+			request.setAttribute("msg", "공지사항 수정 불러오기 중 문제 발생!!");
 		}
 		request.getRequestDispatcher(page).forward(request, response);
 

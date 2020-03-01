@@ -64,4 +64,127 @@ public class NoticeService {
 		return n;
 	}
 
+
+	/**
+	 * 공지사항 추가
+	 * 2020.02.29 Kwon
+	 * @param n
+	 * @return
+	 */
+	public int insertNotice(Notice n) {
+		conn = getConnection();
+		int result = nDao.insertNotice(conn, n);
+		
+		if(result > 0) {
+			commit(conn);
+		} else {
+			rollback(conn);
+		}
+		close(conn);
+		return result;
+	}
+
+
+	/**
+	 * 공지사항 수정 보여주기
+	 * 2020.03.01 Kwon
+	 * @return
+	 */
+	public Notice updateViewNotice(int nno) {
+		conn = getConnection();
+		Notice n = new Notice();
+		
+		n = nDao.updateViewNotice(conn, nno);
+		
+		close(conn);
+		
+		return n;
+	}
+
+
+	/**
+	 * 조회수 1 증가시켜주는 메소드
+	 * @param nno
+	 * @return
+	 */
+	public void noticeCount(int nno) {
+		conn = getConnection();
+		int result = 0;
+		result = nDao.noticeCount(conn, nno);
+		
+		if(result > 0) {
+			commit(conn);
+		} else {
+			rollback(conn);
+		}
+		close(conn);
+		
+		return ;
+	}
+
+
+	/**
+	 * 공지사항 수정하기
+	 * 2020.03.01 Kwon
+	 * @param n
+	 * @return
+	 */
+	public int updateNotice(Notice n) {
+		int result = 0;
+		conn = getConnection();
+		
+		result = nDao.updateNotice(conn, n);
+		
+		if(result > 0) {
+			commit(conn);
+		} else {
+			rollback(conn);
+		}
+		close(conn);
+		
+		return result;
+	}
+
+
+	/**
+	 * 공지사항 삭제하기 (STATUS = N 으로 변경하기)
+	 * 2020.03.01 Kwon
+	 * @param nno
+	 * @return
+	 */
+	public int deleteNotice(int nno) {
+		int result = 0;
+		conn = getConnection();
+		
+		result = nDao.deleteNotice(conn, nno);
+		
+		if(result > 0) {
+			commit(conn);
+		} else {
+			rollback(conn);
+		}
+		close(conn);
+		
+		return result;
+	}
+
+
+	/**
+	 * 공지사항 검색하기
+	 * 2020.03.01 Kwon
+	 * @param con
+	 * @param keyword
+	 * @return
+	 */
+	public ArrayList<Notice> searchNotice(String con, String keyword) {
+		ArrayList<Notice> list = new ArrayList<>();
+		conn = getConnection();
+		
+		list = nDao.searchNotice(conn, con, keyword);
+		
+		close(conn);
+		
+		return list;
+	}
+
 }

@@ -10,9 +10,10 @@ public class Notice implements Serializable{
 	 */
 	private static final long serialVersionUID = 7277682523690336513L;
 	private int nno;
-	private String nTitle;
-	private String nWriter;
-	private String nContent;
+	private String nTitle;   // 글 제목
+	private String nUserName;  // 글 쓴 이름
+	private String nUserId;	 // 아이디
+	private String nContent; // 내용
 	private int nCount;
 	private Date nDate;
 	private String nStatus;
@@ -22,11 +23,14 @@ public class Notice implements Serializable{
 		// TODO Auto-generated constructor stub
 	}
 
-	public Notice(int nno, String nTitle, String nWriter, String nContent, int nCount, Date nDate, String nStatus) {
+	
+	public Notice(int nno, String nTitle, String nUserName, String nUserId, String nContent, int nCount, Date nDate,
+			String nStatus) {
 		super();
 		this.nno = nno;
 		this.nTitle = nTitle;
-		this.nWriter = nWriter;
+		this.nUserName = nUserName;
+		this.nUserId = nUserId;
 		this.nContent = nContent;
 		this.nCount = nCount;
 		this.nDate = nDate;
@@ -47,14 +51,6 @@ public class Notice implements Serializable{
 
 	public void setnTitle(String nTitle) {
 		this.nTitle = nTitle;
-	}
-
-	public String getnWriter() {
-		return nWriter;
-	}
-
-	public void setnWriter(String nWriter) {
-		this.nWriter = nWriter;
 	}
 
 	public String getnContent() {
@@ -89,11 +85,31 @@ public class Notice implements Serializable{
 		this.nStatus = nStatus;
 	}
 
+	public String getnUserName() {
+		return nUserName;
+	}
+
+	public void setnUserName(String nUserName) {
+		this.nUserName = nUserName;
+	}
+
+	public String getnUserId() {
+		return nUserId;
+	}
+
+	public void setnUserId(String nUserId) {
+		this.nUserId = nUserId;
+	}
+
+
 	@Override
 	public String toString() {
-		return "Notice [nno=" + nno + ", nTitle=" + nTitle + ", nWriter=" + nWriter + ", nContent=" + nContent
-				+ ", nCount=" + nCount + ", nDate=" + nDate + ", nStatus=" + nStatus + "]";
+		return "Notice [nno=" + nno + ", nTitle=" + nTitle + ", nUserName=" + nUserName + ", nUserId=" + nUserId
+				+ ", nContent=" + nContent + ", nCount=" + nCount + ", nDate=" + nDate + ", nStatus=" + nStatus + "]";
 	}
+
+	
+	
 	
 	
 
