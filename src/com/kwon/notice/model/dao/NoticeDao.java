@@ -21,7 +21,7 @@ public class NoticeDao {
 	public NoticeDao() {
 		prop = new Properties();
 		
-		String filePath = MemberDao.class.getResource("/config/notice-query.properties").getPath();
+		String filePath = NoticeDao.class.getResource("/config/notice-query.properties").getPath();
 		
 		try {
 			prop.load(new FileReader(filePath));
