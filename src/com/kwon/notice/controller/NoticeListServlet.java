@@ -36,6 +36,7 @@ public class NoticeListServlet extends HttpServlet {
 		
 		NoticeService ns = new NoticeService();
 		
+		System.out.println("처음시작");
 		// 페이징 처리용 변수 설정
 		int startPage;  	// (포이는 페이지 중)가장 앞 페이지(1~10 : 1 , 11~20 : 11)	
 		int endPage;		// (보이는 페이지 중)가장 뒷 페이지 (1~10 : 10, 11~20 : 20)
@@ -82,7 +83,8 @@ public class NoticeListServlet extends HttpServlet {
 		list = ns.noticeList(currentPage, limit);
 		
 		String page = "";
-		
+		System.out.println("[servlet] 공지사항 목록 : " + list);
+
 		if(list != null) {
 			page = "views/notice/noticeList.jsp";
 			
