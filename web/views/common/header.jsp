@@ -4,7 +4,7 @@
 <%
 	Member m = (Member)session.getAttribute("Member");
 	/* session.setMaxInactiveInterval(1000); */
-	System.out.println("[Header] 세션 회원 : " + m);
+	/* System.out.println("[Header] 세션 회원 : " + m); */
 %>
 <!DOCTYPE html>
 <html>

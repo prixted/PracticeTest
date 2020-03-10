@@ -1,4 +1,4 @@
-package com.kwon.notice.controller;
+package com.kwon.board.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,21 +9,21 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.kwon.notice.model.service.NoticeService;
-import com.kwon.notice.model.vo.Notice;
-import com.kwon.notice.model.vo.PageInfo;
+import com.kwon.board.model.service.BoardService;
+import com.kwon.board.model.vo.Board;
+import com.kwon.board.model.vo.PageInfo;
 
 /**
- * Servlet implementation class NoticeListServlet
+ * Servlet implementation class BoardListServlet
  */
-@WebServlet("/selectList.no")
-public class NoticeListServlet extends HttpServlet {
+@WebServlet("/selectList.bo")
+public class BoardListServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public NoticeListServlet() {
+    public BoardListServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -32,11 +32,9 @@ public class NoticeListServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		ArrayList<Notice> list = new ArrayList<>();
+		ArrayList<Board> list = new ArrayList<>();
+		BoardService bs = new BoardService();
 		
-		NoticeService ns = new NoticeService();
-		
-		System.out.println("처음시작");
 		// 페이징 처리용 변수 설정
 		int startPage;  	// (포이는 페이지 중)가장 앞 페이지(1~10 : 1 , 11~20 : 11)	
 		int endPage;		// (보이는 페이지 중)가장 뒷 페이지 (1~10 : 10, 11~20 : 20)
@@ -56,7 +54,7 @@ public class NoticeListServlet extends HttpServlet {
 		}
 		
 		// 페이징 처리(총 페이지 갯수)
-		int listCount = (ns.getListCount()/maxPageLimit);
+		int listCount = (bs.getListCount()/maxPageLimit);
 		if (listCount == 0) { // 이걸 안해주니까 게시글이 한개 일 땐 아래쪽에 번호가 안나오네
 			listCount = 1;
 		}
@@ -80,13 +78,12 @@ public class NoticeListServlet extends HttpServlet {
 			endPage = maxPage;
 		}
 		
-		list = ns.noticeList(currentPage, limit);
+		list = bs.boardList(currentPage, limit);
 		
 		String page = "";
-		System.out.println("[servlet] 공지사항 목록 : " + list);
-
+		
 		if(list != null) {
-			page = "views/notice/noticeList.jsp";
+			page = "views/board/boardList.jsp";
 			
 			PageInfo pi = new PageInfo(currentPage, listCount, limit, maxPage, startPage, endPage);
 			System.out.println("StartPage : " + startPage);
@@ -98,10 +95,8 @@ public class NoticeListServlet extends HttpServlet {
 		}
 		
 		request.getRequestDispatcher(page).forward(request, response);
-		
-
 	}
-
+		
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
